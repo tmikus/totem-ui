@@ -1,0 +1,140 @@
+@import "Mixins.scss";
+
+$windowHeight: 300px;
+$windowWidth: 400px;
+$actionPanelHeight: 50px;
+$titlePanelHeight: 30px;
+$windowBackground: #FFF;
+$titlePanelBackground: #EEE;
+$contentBackground: #FFF;
+$actionPanelBackground: $titlePanelBackground;
+$separatingBorderStyle: 1px solid #BBB;
+
+.tui-window {
+    background: $windowBackground;
+    border: 1px solid #888;
+    border-radius: 6px;
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: $windowHeight;
+    width: $windowWidth;
+    margin-left: -($windowWidth / 2);
+    margin-top: -($windowHeight / 2);
+    overflow: hidden;
+
+    &.shown {
+        display: block;
+    }
+
+    &.maximized {
+        @include calc-size(height, 100%, 40px);
+        @include calc-size(width, 100%, 40px);
+        left: 0;
+        top: 0;
+        margin-left: 20px;
+        margin-top: 20px;
+
+        .tui-window-content {
+            @include calc-size(height, 100%, $actionPanelHeight + $titlePanelHeight + 2px);
+        }
+
+        &.without-actions .tui-window-content {
+            @include calc-size(height, 100%, $titlePanelHeight + 1px);
+        }
+
+        &.without-title .tui-window-content {
+            @include calc-size(height, 100%, $actionPanelHeight + 1px);
+        }
+
+        &.without-actions.without-title .tui-window-content {
+            height: 100%;
+        }
+    }
+
+    &.without-actions {
+        padding-bottom: 3px;
+
+        .tui-window-content {
+            height: ($windowHeight - $titlePanelHeight - 1px);
+        }
+        .tui-window-actions {
+            display: none;
+        }
+    }
+
+    &.without-title {
+        padding-top: 3px;
+
+        .tui-window-title {
+            display: none;
+        }
+        .tui-window-content {
+            height: ($windowHeight - $actionPanelHeight - 1px);
+        }
+    }
+
+    &.without-actions.without-title .tui-window-content {
+        height: $windowHeight;
+    }
+
+    .tui-window-top-actions {
+        position: absolute;
+        right: 0;
+        top: 0;
+        height: $titlePanelHeight;
+        line-height: $titlePanelHeight;
+        text-align: right;
+
+        .tui-maximize-button,
+        .tui-close-window-button {
+            display: none;
+
+            &.shown {
+                display: inline-block;
+            }
+        }
+    }
+
+    .tui-window-title {
+        background: $titlePanelBackground;
+        border-bottom: $separatingBorderStyle;
+        height: $titlePanelHeight;
+        line-height: $titlePanelHeight;
+        padding: 0 15px;
+
+        span {
+            font-size: 15px;
+            line-height: 15px;
+            vertical-align: baseline;
+        }
+    }
+
+    .tui-window-content {
+        background: $contentBackground;
+        height: ($windowHeight - $actionPanelHeight - $titlePanelHeight - 2px);
+        overflow: auto;
+
+        p {
+            line-height: 20px;
+            margin-top: 25px;
+            &:first-child {
+                margin-top: 0;
+            }
+        }
+    }
+
+    .tui-window-actions {
+        background: $actionPanelBackground;
+        border-top: $separatingBorderStyle;
+        height: $actionPanelHeight;
+        line-height: $actionPanelHeight;
+        padding: 0 15px;
+        text-align: right;
+
+        & > * {
+            vertical-align: baseline;
+        }
+    }
+}

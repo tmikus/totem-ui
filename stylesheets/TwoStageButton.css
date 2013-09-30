@@ -1,0 +1,30 @@
+/* line 4, ../sass/TwoStageButton.scss */
+.tui-two-stage-button {
+  background: #f2f2f2;
+  border: 1px solid #9d9d9d;
+  cursor: pointer;
+  display: inline-block;
+  margin: 3px 5px;
+  padding: 4px 8px 4px 8px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+}
+/* line 17, ../sass/TwoStageButton.scss */
+.tui-two-stage-button.tui-tsp-confirm .tui-tsb-confirmation {
+  display: block;
+}
+/* line 21, ../sass/TwoStageButton.scss */
+.tui-two-stage-button.tui-tsp-confirm .tui-tsb-content {
+  display: none;
+}
+/* line 26, ../sass/TwoStageButton.scss */
+.tui-two-stage-button .tui-tsb-confirmation {
+  display: none;
+}
+/* line 31, ../sass/TwoStageButton.scss */
+.tui-two-stage-button .tui-tsb-content {
+  display: block;
+}

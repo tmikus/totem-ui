@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tooltip control example.</title>
+
+    <link rel="stylesheet" href="../../stylesheets/Common.css" type="text/css" />
+    <link rel="stylesheet" href="../../stylesheets/Tooltip.css" type="text/css" />
+
+    <script type="text/javascript" src="../../bower_components/jquery/jquery.js"></script>
+    <script type="text/javascript" src="../../bower_components/underscore/underscore.js"></script>
+    <script type="text/javascript" src="../../js/Util.js"></script>
+    <script type="text/javascript" src="../../js/Core/EventEmitter.js"></script>
+    <script type="text/javascript" src="../../js/Events/CancellableEvent.js"></script>
+    <script type="text/javascript" src="../../js/Control.js"></script>
+    <script type="text/javascript" src="../../js/DialogControl.js"></script>
+    <script type="text/javascript" src="../../js/Tooltip.js"></script>
+    <script type="text/javascript">
+        var tooltip;
+
+        function onShowTooltip() {
+            tooltip.show();
+        }
+
+        function onHideTooltip() {
+            tooltip.hide();
+        }
+
+        function onHorizontalPositionChanged(sender) {
+            tooltip.setHorizontalPosition(sender.value);
+        }
+
+        function onVerticalPositionChanged(sender) {
+            tooltip.setVerticalPosition(sender.value);
+        }
+    </script>
+
+    <style type="text/css">
+        #tooltip-span
+        {
+            color:blue;
+            position: relative;
+            top: 200px;
+            left: 200px;
+        }
+    </style>
+</head>
+<body>
+<h1>Example of Tooltip.</h1>
+
+<label>Horizontal position:</label>
+<label>
+    <input checked="checked" name="horizontal" onchange="onHorizontalPositionChanged(this);" type="radio" value="-1" />
+    Left
+</label>
+<label>
+    <input name="horizontal" onchange="onHorizontalPositionChanged(this);" type="radio" value="0" />
+    Center
+</label>
+<label>
+    <input name="horizontal" onchange="onHorizontalPositionChanged(this);" type="radio" value="1" />
+    Right
+</label>
+<br />
+
+<label>Vertical position:</label>
+<label>
+    <input checked="checked" name="vertical" onchange="onVerticalPositionChanged(this);" type="radio" value="-1" />
+    Top
+</label>
+<label>
+    <input name="vertical" onchange="onVerticalPositionChanged(this);" type="radio" value="0" />
+    Middle
+</label>
+<label>
+    <input name="vertical" onchange="onVerticalPositionChanged(this);" type="radio" value="1" />
+    Bottom
+</label>
+<br />
+
+<span id="tooltip-span" onmouseover="onShowTooltip()" onmouseout="onHideTooltip()">
+    Mouse over this to show tooltip!
+</span>
+<script type="text/javascript">
+    tooltip = new TotemUI.Tooltip(document.getElementById("tooltip-span"));
+    tooltip.setText("So this is a tooltip, huh?");
+    tooltip.setHorizontalPosition(TotemUI.Tooltip.horizontalPosition.left);
+    tooltip.setVerticalPosition(TotemUI.Tooltip.verticalPosition.top);
+</script>
+</body>
+</html>

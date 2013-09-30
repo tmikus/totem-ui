@@ -1,0 +1,21 @@
+{
+    "name": "TotemUI",
+    "version": "0.0.1",
+    "authors": [
+        "Tomasz Mikus <mikus.tomasz@totem-soft.com>"
+    ],
+    "license": "MIT",
+    "homepage": "http://totemui.totem-soft.com/",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests"
+    ],
+    "dependencies": {
+        "jquery": "*",
+        "jquery.maskedinput": "*",
+        "underscore": "*"
+    }
+}

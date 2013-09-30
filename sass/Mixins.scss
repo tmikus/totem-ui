@@ -1,0 +1,6 @@
+@mixin calc-size($dimension, $fullSize, $toRemove) {
+    #{$dimension}: -moz-calc(#{$fullSize} - #{$toRemove});
+    #{$dimension}: -webkit-calc(#{$fullSize} - #{$toRemove});
+    #{$dimension}: -o-calc(#{$fullSize} - #{$toRemove});
+    #{$dimension}: calc(#{$fullSize} - #{$toRemove});
+}

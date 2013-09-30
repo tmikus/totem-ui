@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="underscore-min" type="javaScript">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/bower_components/underscore/underscore-min.js" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

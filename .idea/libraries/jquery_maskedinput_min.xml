@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="jquery.maskedinput.min" type="javaScript">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/bower_components/jquery.maskedinput/jquery.maskedinput.min.js" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

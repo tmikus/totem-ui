@@ -1,0 +1,24 @@
+/* line 4, ../sass/Tooltip.scss */
+.tui-tooltip {
+  background: #f2f2f2;
+  border: 1px solid #9d9d9d;
+  display: none;
+  position: absolute;
+  padding: 4px 8px 4px 8px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-shadow: 1px 1px 3px #b5b5b5;
+  -moz-box-shadow: 1px 1px 3px #b5b5b5;
+  box-shadow: 1px 1px 3px #b5b5b5;
+}
+/* line 13, ../sass/Tooltip.scss */
+.tui-tooltip.shown {
+  display: block;
+}
+/* line 17, ../sass/Tooltip.scss */
+.tui-tooltip p {
+  color: #555555;
+}

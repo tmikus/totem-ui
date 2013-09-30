@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Window control example.</title>
+
+        <link rel="stylesheet" href="../../stylesheets/Common.css" type="text/css" />
+        <link rel="stylesheet" href="../../stylesheets/Window.css" type="text/css" />
+
+        <script type="text/javascript" src="../../bower_components/jquery/jquery.js"></script>
+        <script type="text/javascript" src="../../bower_components/underscore/underscore.js"></script>
+        <script type="text/javascript" src="../../js/Util.js"></script>
+        <script type="text/javascript" src="../../js/Core/EventEmitter.js"></script>
+        <script type="text/javascript" src="../../js/Events/CancellableEvent.js"></script>
+        <script type="text/javascript" src="../../js/Control.js"></script>
+        <script type="text/javascript" src="../../js/DialogControl.js"></script>
+        <script type="text/javascript" src="../../js/Window.js"></script>
+        <script type="text/javascript">
+            var tuiWindow;
+
+            function onShowWindow() {
+                tuiWindow.show();
+            }
+
+            function onHideWindow() {
+                tuiWindow.hide();
+            }
+
+            function onDisposeWindow() {
+                tuiWindow.dispose();
+            }
+        </script>
+    </head>
+    <body>
+        <h1>Example of Window.</h1>
+
+        <button type="button" onclick="onShowWindow()">Show window</button>
+        <button type="button" onclick="onHideWindow()">Hide window</button>
+        <button type="button" onclick="onDisposeWindow()">Dispose window</button>
+
+        <div id="window-panel">
+            <div class="tui-window-title">
+                <span>Title of the window</span>
+            </div>
+            <div class="tui-window-content">
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer cursus diam rutrum tincidunt lacinia. Nulla cursus lorem nec elit pellentesque egestas. Aliquam viverra nisi lectus, nec consectetur lorem posuere at. Nulla facilisi. Quisque et magna porttitor, cursus justo ut, molestie dui. Cras porta elementum ornare. Aliquam non pharetra metus. Sed convallis placerat rhoncus. Phasellus imperdiet porta nulla, vitae molestie metus eleifend non. Curabitur pulvinar ante eleifend erat malesuada blandit. Vestibulum faucibus, nulla et interdum adipiscing, erat neque consequat sem, vel aliquam lectus nunc a nisl. Pellentesque eu vehicula est.</p>
+                <p>Ut luctus, tortor eu posuere dapibus, nulla turpis dignissim augue, sed volutpat nisi nunc nec augue. Nulla ut tempus metus. Sed ut tortor eros. Proin lobortis lorem et nisi faucibus, sit amet vehicula sapien tristique. Quisque placerat ligula id convallis adipiscing. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque et magna diam. Donec sagittis metus elementum, tempor ipsum sit amet, sodales ligula. Nam nec sagittis velit, et mollis eros. Pellentesque lorem massa, feugiat ac gravida non, sollicitudin ac sapien. Curabitur ac convallis massa. Donec sapien felis, dapibus placerat neque vitae, placerat tempor justo.</p>
+                <p>Nunc aliquet lectus felis, non congue massa egestas eget. Proin venenatis purus sed malesuada congue. Aenean quis porttitor turpis, eget vestibulum velit. Suspendisse rutrum lectus et lectus vulputate varius. Phasellus elementum, lorem in ultricies vulputate, lacus nisi bibendum augue, et varius elit mi vel arcu. Suspendisse dignissim ante sit amet felis adipiscing eleifend. Etiam vel consectetur nisi. Aliquam id ipsum turpis. In pulvinar egestas neque nec viverra. In nec metus nibh. Pellentesque consequat rutrum lorem sed ultricies. Vestibulum semper aliquet felis a scelerisque.</p>
+                <p>Praesent magna lectus, convallis eget ligula ac, egestas auctor massa. Praesent eget nulla aliquet, feugiat nisl sed, varius mauris. Curabitur tellus dolor, feugiat sed augue sit amet, laoreet ultricies massa. Curabitur et tortor facilisis, interdum lacus non, ornare odio. Nunc semper dolor in suscipit mollis. Sed in dignissim neque, non accumsan ligula. Nullam malesuada, dui in semper consequat, felis nisl iaculis velit, id commodo quam turpis non diam.</p>
+                <p>Aliquam sodales elit quis dolor adipiscing pulvinar. Quisque nulla ipsum, sagittis eu convallis quis, fermentum tristique lacus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nam mi nibh, placerat at mi ut, facilisis lobortis diam. Vivamus facilisis turpis sit amet nunc bibendum, a malesuada orci vehicula. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Mauris aliquet blandit urna dignissim accumsan. Sed diam est, vehicula in mauris eu, imperdiet volutpat magna. Phasellus adipiscing porttitor lacus non blandit. Ut nisl neque, tristique dictum libero in, viverra hendrerit purus. Sed vel urna eu magna volutpat tempus.</p>
+            </div>
+            <div class="tui-window-actions">
+                <button type="button">Save</button>
+                <button type="button">Cancel</button>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            tuiWindow = new TotemUI.Window(document.getElementById("window-panel"));
+        </script>
+    </body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Two Stage Button control example.</title>
+
+    <link rel="stylesheet" href="../../stylesheets/Common.css" type="text/css" />
+    <link rel="stylesheet" href="../../stylesheets/TwoStageButton.css" type="text/css" />
+
+    <script type="text/javascript" src="../../bower_components/jquery/jquery.js"></script>
+    <script type="text/javascript" src="../../bower_components/underscore/underscore.js"></script>
+    <script type="text/javascript" src="../../js/Util.js"></script>
+    <script type="text/javascript" src="../../js/Core/EventEmitter.js"></script>
+    <script type="text/javascript" src="../../js/Events/CancellableEvent.js"></script>
+    <script type="text/javascript" src="../../js/Control.js"></script>
+    <script type="text/javascript" src="../../js/TwoStageButton.js"></script>
+</head>
+<body>
+<h1>Example of Two Stage Button.</h1>
+<div id="button"></div>
+
+<script type="text/javascript">
+    var twoStageButton = new TotemUI.TwoStageButton(document.getElementById("button"));
+    twoStageButton.setContent("Hello world button");
+    twoStageButton.setConfirmMessage("Do you want to click 'Hello world button'?");
+    twoStageButton.on(TotemUI.TwoStageButton.events.click, function () {
+        alert("Clicked!");
+    });
+</script>
+</body>
+</html>

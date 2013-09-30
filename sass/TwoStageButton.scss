@@ -1,0 +1,35 @@
+@import "compass/css3/border-radius";
+@import "compass/css3/box-shadow";
+
+.tui-two-stage-button {
+    // TODO: Styles of the button
+    background: #f2f2f2;
+    border: 1px solid #9d9d9d;
+    cursor: pointer;
+    display: inline-block;
+    margin: 3px 5px;
+    padding: 4px 8px 4px 8px;
+    @include border-radius(4px);
+
+    &.tui-tsp-confirm {
+        // TODO: Style after pressing the two stage button.
+
+        .tui-tsb-confirmation {
+            display: block;
+        }
+
+        .tui-tsb-content {
+            display: none;
+        }
+    }
+
+    .tui-tsb-confirmation {
+        // TODO: Style of the confirmation label.
+        display: none;
+    }
+
+    .tui-tsb-content {
+        // TODO: Style of the button content
+        display: block;
+    }
+}
