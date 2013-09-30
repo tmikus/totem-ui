@@ -9,6 +9,8 @@ $titlePanelBackground: #EEE;
 $contentBackground: #FFF;
 $actionPanelBackground: $titlePanelBackground;
 $separatingBorderStyle: 1px solid #BBB;
+$resizeBorderSize: 8px;
+$resizeGripSize: 15px;
 
 .tui-window {
     background: $windowBackground;
@@ -29,28 +31,44 @@ $separatingBorderStyle: 1px solid #BBB;
     }
 
     &.maximized {
-        @include calc-size(height, 100%, 40px);
-        @include calc-size(width, 100%, 40px);
-        left: 0;
-        top: 0;
-        margin-left: 20px;
-        margin-top: 20px;
+        @include calc-size-important(height, 100%, 40px);
+        @include calc-size-important(width, 100%, 40px);
+        left: 0 !important;
+        top: 0 !important;
+        margin-left: 20px !important;
+        margin-top: 20px !important;
+
+        &.movable .tui-window-title {
+            cursor: default;
+        }
 
         .tui-window-content {
-            @include calc-size(height, 100%, $actionPanelHeight + $titlePanelHeight + 2px);
+            @include calc-size-important(height, 100%, $actionPanelHeight + $titlePanelHeight + 2px);
+        }
+
+        &.resizable .tui-resize-bar {
+            display: none;
         }
 
         &.without-actions .tui-window-content {
-            @include calc-size(height, 100%, $titlePanelHeight + 1px);
+            @include calc-size-important(height, 100%, $titlePanelHeight + 1px);
         }
 
         &.without-title .tui-window-content {
-            @include calc-size(height, 100%, $actionPanelHeight + 1px);
+            @include calc-size-important(height, 100%, $actionPanelHeight + 1px);
         }
 
         &.without-actions.without-title .tui-window-content {
             height: 100%;
         }
+    }
+
+    &.movable .tui-window-title {
+        cursor: move;
+    }
+
+    &.resizable .tui-resize-bar {
+        display: block;
     }
 
     &.without-actions {
@@ -135,6 +153,51 @@ $separatingBorderStyle: 1px solid #BBB;
 
         & > * {
             vertical-align: baseline;
+        }
+    }
+
+    .tui-resize-bar {
+        display: none;
+        position: absolute;
+
+        &.bottom {
+            bottom: 0;
+            cursor: s-resize;
+            height: $resizeBorderSize;
+            left: 0;
+            width: 100%;
+        }
+
+        &.bottom-right {
+            bottom: 0;
+            cursor: se-resize;
+            height: $resizeGripSize;
+            right: 0;
+            width: $resizeGripSize;
+        }
+
+        &.left {
+            cursor: w-resize;
+            height: 100%;
+            left: 0;
+            top: 0;
+            width: $resizeBorderSize;
+        }
+
+        &.right {
+            cursor: e-resize;
+            height: 100%;
+            right: 0;
+            top: 0;
+            width: $resizeBorderSize;
+        }
+
+        &.top {
+            cursor: n-resize;
+            height: $resizeBorderSize;
+            left: 0;
+            top: 0;
+            width: 100%;
         }
     }
 }

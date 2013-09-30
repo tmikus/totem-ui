@@ -1,4 +1,4 @@
-/* line 13, ../sass/Window.scss */
+/* line 15, ../sass/Window.scss */
 .tui-window {
   background: white;
   border: 1px solid #888;
@@ -13,79 +13,95 @@
   margin-top: -150px;
   overflow: hidden;
 }
-/* line 27, ../sass/Window.scss */
+/* line 29, ../sass/Window.scss */
 .tui-window.shown {
   display: block;
 }
-/* line 31, ../sass/Window.scss */
+/* line 33, ../sass/Window.scss */
 .tui-window.maximized {
-  height: -moz-calc(100% - 40px);
-  height: -webkit-calc(100% - 40px);
-  height: -o-calc(100% - 40px);
-  height: calc(100% - 40px);
-  width: -moz-calc(100% - 40px);
-  width: -webkit-calc(100% - 40px);
-  width: -o-calc(100% - 40px);
-  width: calc(100% - 40px);
-  left: 0;
-  top: 0;
-  margin-left: 20px;
-  margin-top: 20px;
+  height: -moz-calc(100% - 40px) !important;
+  height: -webkit-calc(100% - 40px) !important;
+  height: -o-calc(100% - 40px) !important;
+  height: calc(100% - 40px) !important;
+  width: -moz-calc(100% - 40px) !important;
+  width: -webkit-calc(100% - 40px) !important;
+  width: -o-calc(100% - 40px) !important;
+  width: calc(100% - 40px) !important;
+  left: 0 !important;
+  top: 0 !important;
+  margin-left: 20px !important;
+  margin-top: 20px !important;
 }
-/* line 39, ../sass/Window.scss */
+/* line 41, ../sass/Window.scss */
+.tui-window.maximized.movable .tui-window-title {
+  cursor: default;
+}
+/* line 45, ../sass/Window.scss */
 .tui-window.maximized .tui-window-content {
-  height: -moz-calc(100% - 82px);
-  height: -webkit-calc(100% - 82px);
-  height: -o-calc(100% - 82px);
-  height: calc(100% - 82px);
+  height: -moz-calc(100% - 82px) !important;
+  height: -webkit-calc(100% - 82px) !important;
+  height: -o-calc(100% - 82px) !important;
+  height: calc(100% - 82px) !important;
 }
-/* line 43, ../sass/Window.scss */
+/* line 49, ../sass/Window.scss */
+.tui-window.maximized.resizable .tui-resize-bar {
+  display: none;
+}
+/* line 53, ../sass/Window.scss */
 .tui-window.maximized.without-actions .tui-window-content {
-  height: -moz-calc(100% - 31px);
-  height: -webkit-calc(100% - 31px);
-  height: -o-calc(100% - 31px);
-  height: calc(100% - 31px);
+  height: -moz-calc(100% - 31px) !important;
+  height: -webkit-calc(100% - 31px) !important;
+  height: -o-calc(100% - 31px) !important;
+  height: calc(100% - 31px) !important;
 }
-/* line 47, ../sass/Window.scss */
+/* line 57, ../sass/Window.scss */
 .tui-window.maximized.without-title .tui-window-content {
-  height: -moz-calc(100% - 51px);
-  height: -webkit-calc(100% - 51px);
-  height: -o-calc(100% - 51px);
-  height: calc(100% - 51px);
+  height: -moz-calc(100% - 51px) !important;
+  height: -webkit-calc(100% - 51px) !important;
+  height: -o-calc(100% - 51px) !important;
+  height: calc(100% - 51px) !important;
 }
-/* line 51, ../sass/Window.scss */
+/* line 61, ../sass/Window.scss */
 .tui-window.maximized.without-actions.without-title .tui-window-content {
   height: 100%;
 }
-/* line 56, ../sass/Window.scss */
+/* line 66, ../sass/Window.scss */
+.tui-window.movable .tui-window-title {
+  cursor: move;
+}
+/* line 70, ../sass/Window.scss */
+.tui-window.resizable .tui-resize-bar {
+  display: block;
+}
+/* line 74, ../sass/Window.scss */
 .tui-window.without-actions {
   padding-bottom: 3px;
 }
-/* line 59, ../sass/Window.scss */
+/* line 77, ../sass/Window.scss */
 .tui-window.without-actions .tui-window-content {
   height: 269px;
 }
-/* line 62, ../sass/Window.scss */
+/* line 80, ../sass/Window.scss */
 .tui-window.without-actions .tui-window-actions {
   display: none;
 }
-/* line 67, ../sass/Window.scss */
+/* line 85, ../sass/Window.scss */
 .tui-window.without-title {
   padding-top: 3px;
 }
-/* line 70, ../sass/Window.scss */
+/* line 88, ../sass/Window.scss */
 .tui-window.without-title .tui-window-title {
   display: none;
 }
-/* line 73, ../sass/Window.scss */
+/* line 91, ../sass/Window.scss */
 .tui-window.without-title .tui-window-content {
   height: 249px;
 }
-/* line 78, ../sass/Window.scss */
+/* line 96, ../sass/Window.scss */
 .tui-window.without-actions.without-title .tui-window-content {
   height: 300px;
 }
-/* line 82, ../sass/Window.scss */
+/* line 100, ../sass/Window.scss */
 .tui-window .tui-window-top-actions {
   position: absolute;
   right: 0;
@@ -94,17 +110,17 @@
   line-height: 30px;
   text-align: right;
 }
-/* line 91, ../sass/Window.scss */
+/* line 109, ../sass/Window.scss */
 .tui-window .tui-window-top-actions .tui-maximize-button,
 .tui-window .tui-window-top-actions .tui-close-window-button {
   display: none;
 }
-/* line 94, ../sass/Window.scss */
+/* line 112, ../sass/Window.scss */
 .tui-window .tui-window-top-actions .tui-maximize-button.shown,
 .tui-window .tui-window-top-actions .tui-close-window-button.shown {
   display: inline-block;
 }
-/* line 100, ../sass/Window.scss */
+/* line 118, ../sass/Window.scss */
 .tui-window .tui-window-title {
   background: #eeeeee;
   border-bottom: 1px solid #bbbbbb;
@@ -112,28 +128,28 @@
   line-height: 30px;
   padding: 0 15px;
 }
-/* line 107, ../sass/Window.scss */
+/* line 125, ../sass/Window.scss */
 .tui-window .tui-window-title span {
   font-size: 15px;
   line-height: 15px;
   vertical-align: baseline;
 }
-/* line 114, ../sass/Window.scss */
+/* line 132, ../sass/Window.scss */
 .tui-window .tui-window-content {
   background: white;
   height: 218px;
   overflow: auto;
 }
-/* line 119, ../sass/Window.scss */
+/* line 137, ../sass/Window.scss */
 .tui-window .tui-window-content p {
   line-height: 20px;
   margin-top: 25px;
 }
-/* line 122, ../sass/Window.scss */
+/* line 140, ../sass/Window.scss */
 .tui-window .tui-window-content p:first-child {
   margin-top: 0;
 }
-/* line 128, ../sass/Window.scss */
+/* line 146, ../sass/Window.scss */
 .tui-window .tui-window-actions {
   background: #eeeeee;
   border-top: 1px solid #bbbbbb;
@@ -142,7 +158,52 @@
   padding: 0 15px;
   text-align: right;
 }
-/* line 136, ../sass/Window.scss */
+/* line 154, ../sass/Window.scss */
 .tui-window .tui-window-actions > * {
   vertical-align: baseline;
+}
+/* line 159, ../sass/Window.scss */
+.tui-window .tui-resize-bar {
+  display: none;
+  position: absolute;
+}
+/* line 163, ../sass/Window.scss */
+.tui-window .tui-resize-bar.bottom {
+  bottom: 0;
+  cursor: s-resize;
+  height: 8px;
+  left: 0;
+  width: 100%;
+}
+/* line 171, ../sass/Window.scss */
+.tui-window .tui-resize-bar.bottom-right {
+  bottom: 0;
+  cursor: se-resize;
+  height: 15px;
+  right: 0;
+  width: 15px;
+}
+/* line 179, ../sass/Window.scss */
+.tui-window .tui-resize-bar.left {
+  cursor: w-resize;
+  height: 100%;
+  left: 0;
+  top: 0;
+  width: 8px;
+}
+/* line 187, ../sass/Window.scss */
+.tui-window .tui-resize-bar.right {
+  cursor: e-resize;
+  height: 100%;
+  right: 0;
+  top: 0;
+  width: 8px;
+}
+/* line 195, ../sass/Window.scss */
+.tui-window .tui-resize-bar.top {
+  cursor: n-resize;
+  height: 8px;
+  left: 0;
+  top: 0;
+  width: 100%;
 }

@@ -16,7 +16,14 @@ TotemUI.Window = function Window(element, configuration) {
     configuration = _.extend({}, TotemUI.Window.defaultConfiguration, configuration);
 
     this.maximized = configuration.maximized && configuration.showMaximizeButton;
+    this.movable = configuration.movable;
+    this.moveStartPosition = null;
+    this.moveStartWindowLocation = null;
     this.originalContainer = !!element ? element.parentNode : null;
+    this.resizable =  configuration.resizable;
+    this.resizeStartPosition = null;
+    this.resizeStartControlsSize = null;
+    this.resizeStartWindowLocation = null;
     this.showCloseButton = configuration.showCloseButton;
     this.showMaximizeButton = configuration.showMaximizeButton;
     this.title = configuration.title;
@@ -24,12 +31,43 @@ TotemUI.Window = function Window(element, configuration) {
     this.$element = $(element || this._createWindowElement());
     this.controls = {
         bottomActionsPanel: this.$element.children(".tui-window-actions"),
+        bottomResizeBar: null,
+        bottomRightResizeBar: null,
         closeButton: null,
         contentPanel: this.$element.children(".tui-window-content"),
+        leftResizeBar: null,
         maximizeButton: null,
+        rightResizeBar: null,
         titlePanel: this.$element.children(".tui-window-title"),
         titleLabel: this.$element.find(".tui-window-title > span"),
-        topActionsPanel: null
+        topActionsPanel: null,
+        topResizeBar: null
+    };
+    this.eventBindings = {
+        mouseDown: {
+            bottomResizeBar: this._beginBottomBarResizing.bind(this),
+            bottomRightResizeBar: this._beginBottomRightBarResizing.bind(this),
+            leftResizeBar: this._beginLeftBarResizing.bind(this),
+            rightResizeBar: this._beginRightBarResizing.bind(this),
+            titlePanel: this._beginMovingWindow.bind(this),
+            topResizeBar: this._beginTopBarResizing.bind(this)
+        },
+        mouseMove: {
+            bottomResizeBar: this._onResizeBottomBar.bind(this),
+            bottomRightResizeBar: this._onResizeBottomRightBar.bind(this),
+            leftResizeBar: this._onResizeLeftBar.bind(this),
+            rightResizeBar: this._onResizeRightBar.bind(this),
+            titlePanel: this._onMoveWindow.bind(this),
+            topResizeBar: this._onResizeTopBar.bind(this)
+        },
+        mouseUp: {
+            bottomResizeBar: this._endBottomBarResizing.bind(this),
+            bottomRightResizeBar: this._endBottomRightBarResizing.bind(this),
+            leftResizeBar: this._endLeftBarResizing.bind(this),
+            rightResizeBar: this._endRightBarResizing.bind(this),
+            titlePanel: this._endMovingWindow.bind(this),
+            topResizeBar: this._endTopBarResizing.bind(this)
+        }
     };
 };
 
@@ -48,12 +86,129 @@ TotemUI.Window.events = _.extend({}, TotemUI.DialogControl.events, {
  */
 TotemUI.Window.defaultConfiguration = {
     maximized: false,
+    movable: true,
+    resizable: true,
     showCloseButton: true,
     showMaximizeButton: true,
     title: ""
 };
 
 TotemUI.Window.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype, {
+    /**
+     * Called when user initiated moving of the window.
+     * @param e Event arguments from jQuery.
+     * @private
+     */
+    _beginMovingWindow: function _beginMovingWindow(e) {
+        e.preventDefault();
+
+        if (this.$element.is(".maximized"))
+            return;
+
+        this.moveStartPosition = {
+            x: e.pageX,
+            y: e.pageY
+        };
+
+        var windowOffset = this.$element.offset();
+        this.moveStartWindowLocation = {
+            x: windowOffset.left,
+            y: windowOffset.top
+        };
+
+        this.$element.css({
+            marginLeft: "0",
+            marginTop: "0",
+            left: this.moveStartWindowLocation.x,
+            top: this.moveStartWindowLocation.y
+        });
+
+        $(window).on("mousemove", this.eventBindings.mouseMove.titlePanel)
+                 .on("mouseup", this.eventBindings.mouseUp.titlePanel);
+    },
+    /**
+     * Universal method for starting resizing of the window.
+     *
+     * @param e Event arguments from jQuery.
+     * @param mouseMove Method to call after moving mouse.
+     * @param mouseUp Method to call after releasing mouse button.
+     * @private
+     */
+    _beginResizing: function _beginResizing(e, mouseMove, mouseUp) {
+        e.preventDefault();
+
+        var windowOffset = this.$element.offset();
+        this.resizeStartWindowLocation = {
+            x: windowOffset.left,
+            y: windowOffset.top
+        };
+
+        this.resizeStartPosition = {
+            x: e.pageX,
+            y: e.pageY
+        };
+
+        this.resizeStartControlsSize = {
+            contentPanel: {
+                height: this.controls.contentPanel.height(),
+                width: this.controls.contentPanel.width()
+            },
+            window: {
+                height: this.$element.height(),
+                width: this.$element.width()
+            }
+        };
+
+        this.$element.css({
+            marginLeft: "0",
+            marginTop: "0",
+            left: this.resizeStartWindowLocation.x,
+            top: this.resizeStartWindowLocation.y
+        });
+
+        $(window).on("mousemove", mouseMove)
+                 .on("mouseup", mouseUp);
+    },
+    /**
+     * Called when user initiated resizing of the bottom bar of the window.
+     * @param e Event arguments from jQuery.
+     * @private
+     */
+    _beginBottomBarResizing: function _beginBottomBarResizing(e) {
+        this._beginResizing(e, this.eventBindings.mouseMove.bottomResizeBar, this.eventBindings.mouseUp.bottomResizeBar)
+    },
+    /**
+     * Called when user initiated resizing of the bottom right bar of the window.
+     * @param e Event arguments from jQuery.
+     * @private
+     */
+    _beginBottomRightBarResizing: function _beginBottomRightBarResizing(e) {
+        this._beginResizing(e, this.eventBindings.mouseMove.bottomRightResizeBar, this.eventBindings.mouseUp.bottomRightResizeBar);
+    },
+    /**
+     * Called when user initiated resizing of the left bar of the window.
+     * @param e Event arguments from jQuery.
+     * @private
+     */
+    _beginLeftBarResizing: function _beginLeftBarResizing(e) {
+        this._beginResizing(e, this.eventBindings.mouseMove.leftResizeBar, this.eventBindings.mouseUp.leftResizeBar);
+    },
+    /**
+     * Called when user initiated resizing of the right bar of the window.
+     * @param e Event arguments from jQuery.
+     * @private
+     */
+    _beginRightBarResizing: function _beginRightBarResizing(e) {
+        this._beginResizing(e, this.eventBindings.mouseMove.rightResizeBar, this.eventBindings.mouseUp.rightResizeBar);
+    },
+    /**
+     * Called when user initiated resizing of the top bar of the window.
+     * @param e Event arguments from jQuery.
+     * @private
+     */
+    _beginTopBarResizing: function _beginTopBarResizing(e) {
+        this._beginResizing(e, this.eventBindings.mouseMove.topResizeBar, this.eventBindings.mouseUp.topResizeBar);
+    },
     /**
      * Creates new Window element - this element will not be added to any DOM node.
      * Will only exist in the memory.
@@ -79,6 +234,74 @@ TotemUI.Window.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype, 
         return element;
     },
     /**
+     * Called when user stopped moving the window.
+     * @param e Event arguments from jQuery.
+     * @private
+     */
+    _endMovingWindow: function _endMovingWindow(e) {
+        $(window).off("mousemove", this.eventBindings.mouseMove.titlePanel)
+                 .off("mouseup", this.eventBindings.mouseUp.titlePanel);
+
+        this.moveStartPosition = null;
+        this.moveStartWindowLocation = null;
+    },
+    /**
+     * Universal method for ending resizing of the window.
+     *
+     * @param e Event arguments from jQuery.
+     * @param mouseMove Method bound to mouse move event of the window.
+     * @param mouseUp Method bound to mouse up event of the window.
+     * @private
+     */
+    _endResizing: function _endResizing(e, mouseMove, mouseUp) {
+        $(window).off("mousemove", mouseMove)
+                 .off("mouseup", mouseUp);
+
+        this.resizeStartPosition = null;
+        this.resizeStartControlsSize = null;
+        this.resizeStartWindowLocation = null;
+    },
+    /**
+     * Called when user stopped resizing of the bottom bar of window.
+     * @param e Event arguments from jQuery.
+     * @private
+     */
+    _endBottomBarResizing: function _endBottomBarResizing(e) {
+        this._endResizing(e, this.eventBindings.mouseMove.bottomResizeBar, this.eventBindings.mouseUp.bottomResizeBar);
+    },
+    /**
+     * Called when user stopped resizing of the bottom right bar of window.
+     * @param e Event arguments from jQuery.
+     * @private
+     */
+    _endBottomRightBarResizing: function _endBottomRightBarResizing(e) {
+        this._endResizing(e, this.eventBindings.mouseMove.bottomRightResizeBar, this.eventBindings.mouseUp.bottomRightResizeBar);
+    },
+    /**
+     * Called when user stopped resizing of the left bar of window.
+     * @param e Event arguments from jQuery.
+     * @private
+     */
+    _endLeftBarResizing: function _endLeftBarResizing(e) {
+        this._endResizing(e, this.eventBindings.mouseMove.leftResizeBar, this.eventBindings.mouseUp.leftResizeBar);
+    },
+    /**
+     * Called when user stopped resizing of the right bar of window.
+     * @param e Event arguments from jQuery.
+     * @private
+     */
+    _endRightBarResizing: function _endRightBarResizing(e) {
+        this._endResizing(e, this.eventBindings.mouseMove.rightResizeBar, this.eventBindings.mouseUp.rightResizeBar);
+    },
+    /**
+     * Called when user stopped resizing of the top bar of window.
+     * @param e Event arguments from jQuery.
+     * @private
+     */
+    _endTopBarResizing: function _endTopBarResizing(e) {
+        this._endResizing(e, this.eventBindings.mouseMove.topResizeBar, this.eventBindings.mouseUp.topResizeBar);
+    },
+    /**
      * Initializes instance of the Window control.
      * Window this is hidden by default.
      * @returns {boolean} True if initialization has succeeded; otherwise false.
@@ -91,9 +314,127 @@ TotemUI.Window.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype, 
         this.$element.addClass("tui-window");
         this.$element.appendTo(document.body);
 
+        if (this.movable)
+            this.$element.addClass("movable");
+
+        if (this.resizable)
+            this.$element.addClass("resizable");
+
         this._setupTopActionsPanel();
+        this._setupResizeBars();
+        this._setupMovingWindow();
 
         return true;
+    },
+    /**
+     * Called when user has changed position of the window.
+     * @param e Event arguments from jQuery.
+     * @private
+     */
+    _onMoveWindow: function _onMoveWindow(e) {
+        var deltaPositionX = e.pageX - this.moveStartPosition.x;
+        var deltaPositionY = e.pageY - this.moveStartPosition.y;
+        this.$element.css("left", this.moveStartWindowLocation.x + deltaPositionX)
+                     .css("top", this.moveStartWindowLocation.y + deltaPositionY);
+    },
+    /**
+     * Called when user has changed size of the window using bottom border.
+     * @param e Event arguments from jQuery.
+     * @private
+     */
+    _onResizeBottomBar: function _onResizeBottomBar(e) {
+        var deltaPositionY = e.pageY - this.resizeStartPosition.y;
+        this.controls.contentPanel.height(this.resizeStartControlsSize.contentPanel.height + deltaPositionY);
+        this.$element.height(this.resizeStartControlsSize.window.height + deltaPositionY);
+    },
+    /**
+     * Called when user has changed size of the window using bottom right corner.
+     * @param e Event arguments from jQuery.
+     * @private
+     */
+    _onResizeBottomRightBar: function _onResizeBottomRightBar(e) {
+        var deltaPositionX = e.pageX - this.resizeStartPosition.x;
+        var deltaPositionY = e.pageY - this.resizeStartPosition.y;
+        this.controls.contentPanel.height(this.resizeStartControlsSize.contentPanel.height + deltaPositionY);
+        this.$element.height(this.resizeStartControlsSize.window.height + deltaPositionY);
+        this.$element.width(this.resizeStartControlsSize.window.width + deltaPositionX);
+    },
+    /**
+     * Called when user has changed size of the window using left border.
+     * @param e Event arguments from jQuery.
+     * @private
+     */
+    _onResizeLeftBar: function _onResizeLeftBar(e) {
+        var deltaPositionX = e.pageX - this.resizeStartPosition.x;
+        this.$element.css("left", this.resizeStartWindowLocation.x + deltaPositionX)
+                     .width(this.resizeStartControlsSize.window.width - deltaPositionX);
+    },
+    /**
+     * Called when user has changed size of the window using right border.
+     * @param e Event arguments from jQuery.
+     * @private
+     */
+    _onResizeRightBar: function _onResizeRightBar(e) {
+        var deltaPositionX = e.pageX - this.resizeStartPosition.x;
+        this.$element.width(this.resizeStartControlsSize.window.width + deltaPositionX);
+    },
+    /**
+     * Called when user has changed size of the window using top border.
+     * @param e Event arguments from jQuery.
+     * @private
+     */
+    _onResizeTopBar: function _onResizeTopBar(e) {
+        var deltaPositionY = e.pageY - this.resizeStartPosition.y;
+        this.controls.contentPanel.height(this.resizeStartControlsSize.contentPanel.height - deltaPositionY);
+        this.$element.css("top", this.resizeStartWindowLocation.y + deltaPositionY)
+                     .height(this.resizeStartControlsSize.window.height - deltaPositionY);
+    },
+    /**
+     * Sets up moving of the window.
+     * @private
+     */
+    _setupMovingWindow: function _setupMovingWindow() {
+        this.controls.titlePanel.on("mousedown", this.eventBindings.mouseDown.titlePanel);
+    },
+    /**
+     * Sets up bars for resizing the window.
+     * Also it ties event handlers for them.
+     * @private
+     */
+    _setupResizeBars: function _setupResizeBars() {
+        var bottomResizeBar = document.createElement("div");
+        var bottomRightResizeBar = document.createElement("div");
+        var leftResizeBar = document.createElement("div");
+        var rightResizeBar = document.createElement("div");
+        var topResizeBar = document.createElement("div");
+
+        // Setting classes for controls.
+        bottomResizeBar.className = "tui-resize-bar bottom";
+        bottomRightResizeBar.className = "tui-resize-bar bottom-right";
+        leftResizeBar.className = "tui-resize-bar left";
+        rightResizeBar.className = "tui-resize-bar right";
+        topResizeBar.className = "tui-resize-bar top";
+
+        // Adding controls to the window element
+        this.$element.append(bottomResizeBar)
+                     .append(leftResizeBar)
+                     .append(rightResizeBar)
+                     .append(topResizeBar)
+                     .append(bottomRightResizeBar);
+
+        // Setting references to the controls - they can be useful in disposing the control.
+        this.controls.bottomResizeBar = $(bottomResizeBar);
+        this.controls.bottomRightResizeBar = $(bottomRightResizeBar);
+        this.controls.leftResizeBar = $(leftResizeBar);
+        this.controls.rightResizeBar = $(rightResizeBar);
+        this.controls.topResizeBar = $(topResizeBar);
+
+        // Adding event handlers
+        this.controls.bottomResizeBar.on("mousedown", this.eventBindings.mouseDown.bottomResizeBar);
+        this.controls.bottomRightResizeBar.on("mousedown", this.eventBindings.mouseDown.bottomRightResizeBar);
+        this.controls.leftResizeBar.on("mousedown", this.eventBindings.mouseDown.leftResizeBar);
+        this.controls.rightResizeBar.on("mousedown", this.eventBindings.mouseDown.rightResizeBar);
+        this.controls.topResizeBar.on("mousedown", this.eventBindings.mouseDown.topResizeBar);
     },
     /**
      * Sets up Top Actions panel of the Window control.
@@ -145,10 +486,35 @@ TotemUI.Window.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype, 
         // Cleaning up window classes
         this.$element.removeClass("tui-window")
                      .removeClass("shown")
-                     .removeClass("maximized");
+                     .removeClass("maximized")
+                     .removeClass("movable")
+                     .removeClass("resizable")
+                     .css({
+                         height: "",
+                         left: "",
+                         marginLeft: "",
+                         marginTop: "",
+                         top: "",
+                         width: ""
+                     });
+
+        // Cleaning up content styles
+        this.controls.contentPanel.css({
+            height: ""
+        });
+
+        // Removing event handler from title bar
+        this.controls.titlePanel.off("mousedown", this.eventBindings.mouseDown.titlePanel);
 
         // Removing top actions panel
         this.controls.topActionsPanel.remove();
+
+        // Removing resize bars
+        this.controls.bottomResizeBar.remove();
+        this.controls.bottomRightResizeBar.remove();
+        this.controls.leftResizeBar.remove();
+        this.controls.rightResizeBar.remove();
+        this.controls.topResizeBar.remove();
 
         // Checking if original container existed
         if (this.originalContainer) {
@@ -205,6 +571,20 @@ TotemUI.Window.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype, 
         return this.maximized;
     },
     /**
+     * Gets if the window is movable.
+     * @returns {boolean} True if the window is movable; otherwise false.
+     */
+    isMovable: function isMovable() {
+        return this.movable;
+    },
+    /**
+     * Gets if the window is resizable.
+     * @returns {boolean} True if is resizable; otherwise false.
+     */
+    isResizable: function isResizable() {
+        return this.resizable;
+    },
+    /**
      * Maximizes the window.
      */
     maximize: function maximize() {
@@ -253,6 +633,30 @@ TotemUI.Window.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype, 
         } else {
             this.controls.maximizeButton.removeClass("shown");
         }
+    },
+    /**
+     * Sets the movable property of the window.
+     * @param {boolean} value True if the window should be movable; otherwise false.
+     */
+    setMovable: function setMovable(value) {
+        this.movable = value;
+
+        if (value)
+            this.$element.addClass("movable");
+        else
+            this.$element.removeClass("movable");
+    },
+    /**
+     * Sets the resizable property of the window.
+     * @param {boolean} value True if the window should be resizable; otherwise false.
+     */
+    setResizable: function setResizable(value) {
+        this.resizable = value;
+
+        if (value)
+            this.$element.addClass("resizable");
+        else
+            this.$element.removeClass("resizable");
     },
     /**
      * Sets the title of the window control.

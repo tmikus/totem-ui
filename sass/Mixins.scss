@@ -4,3 +4,10 @@
     #{$dimension}: -o-calc(#{$fullSize} - #{$toRemove});
     #{$dimension}: calc(#{$fullSize} - #{$toRemove});
 }
+
+@mixin calc-size-important($dimension, $fullSize, $toRemove) {
+    #{$dimension}: -moz-calc(#{$fullSize} - #{$toRemove}) !important;
+    #{$dimension}: -webkit-calc(#{$fullSize} - #{$toRemove}) !important;
+    #{$dimension}: -o-calc(#{$fullSize} - #{$toRemove}) !important;
+    #{$dimension}: calc(#{$fullSize} - #{$toRemove}) !important;
+}
