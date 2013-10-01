@@ -1,4 +1,6 @@
 @import "Mixins.scss";
+@import "compass/css3/border-radius";
+@import "compass/css3/box-shadow";
 
 $windowHeight: 300px;
 $windowWidth: 400px;
@@ -15,7 +17,8 @@ $resizeGripSize: 15px;
 .tui-window {
     background: $windowBackground;
     border: 1px solid #888;
-    border-radius: 6px;
+    @include border-radius(6px);
+    @include box-shadow(2px 2px 3px #b5b5b5);
     display: none;
     position: absolute;
     top: 50%;
