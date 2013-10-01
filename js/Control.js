@@ -13,11 +13,9 @@ var TotemUI = TotemUI || {};
 TotemUI.Control = function Control(configuration) {
     TotemUI.Core.EventEmitter.apply(this, arguments);
 
-    // Preparing configuration - filling with defaults.
-    configuration = _.extend({}, Control.defaultConfiguration, configuration);
+    configuration = _.extend({}, TotemUI.Control.defaultConfiguration, configuration);
 
     this.enabled = configuration.enabled;
-    this.readonly = configuration.readonly;
 };
 
 /**
@@ -25,8 +23,7 @@ TotemUI.Control = function Control(configuration) {
  * @class
  */
 TotemUI.Control.defaultConfiguration = {
-    enabled: false,
-    readonly: false
+    enabled: false
 };
 
 /**
@@ -34,38 +31,21 @@ TotemUI.Control.defaultConfiguration = {
  * @enum {string}
  */
 TotemUI.Control.events = {
-    enabledChanged: "enabledChanged",
-    readonlyChanged: "readonlyChanged"
+    enabledChanged: "enabledChanged"
 };
 
 TotemUI.Control.prototype = TotemUI.Util.extend(TotemUI.Core.EventEmitter.prototype, {
-    /**
-     * Removes focus from this control.
-     */
-    blur: TotemUI.Util.notImplemented,
     /**
      * Disposes instance of the control.
      */
     dispose: function dispose() { },
     /**
-     * Focuses this control.
-     */
-    focus: TotemUI.Util.notImplemented,
-    /**
      * Gets if the control is enabled.
      *
      * @returns {boolean} True if is enabled; otherwise false.
      */
-    getEnabled: function getEnabled() {
+    isEnabled: function isEnabled() {
         return this.enabled;
-    },
-    /**
-     * Gets if the control is readonly.
-     *
-     * @returns {boolean} True if is readonly; otherwise false.
-     */
-    getReadonly: function getReadonly() {
-        return this.readonly;
     },
     /**
      * Sets if the control is enabled.
@@ -73,20 +53,10 @@ TotemUI.Control.prototype = TotemUI.Util.extend(TotemUI.Core.EventEmitter.protot
      * @param {boolean} enabled True if the control should be enabled; otherwise false.
      */
     setEnabled: function setEnabled(enabled) {
-        if (this.enabled != enabled) {
-            this.enabled = enabled;
-            this._trigger(Control.events.enabledChanged, enabled);
-        }
-    },
-    /**
-     * Sets if the control is readonly.
-     *
-     * @param {boolean} readonly True if control should be readonly; otherwise false.
-     */
-    setReadonly: function setReadonly(readonly) {
-        if (this.readonly != readonly) {
-            this.readonly = readonly;
-            this._trigger(Control.events.readonlyChanged, readonly);
-        }
+        if (this.enabled == enabled)
+            return;
+
+        this.enabled = enabled;
+        this._trigger(TotemUI.Control.events.enabledChanged, enabled);
     }
 });
