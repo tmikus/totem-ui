@@ -80,7 +80,13 @@ TotemUI.Window.events = _.extend({}, TotemUI.DialogControl.events, {
     maximized: "maximized",
     minimizing: "minimizing",
     minimized: "minimized",
+    move: "move",
+    moveEnd: "moveEnd",
+    moveStart: "moveStart",
     movableChanged: "movableChanged",
+    resize: "resize",
+    resizeEnd: "resizeEnd",
+    resizeStart: "resizeStart",
     resizableChanged: "resizableChanged",
     showCloseButtonChanged: "showCloseButtonChanged",
     showMaximizeButtonChanged: "showMaximizeButtonChanged",
@@ -110,6 +116,11 @@ TotemUI.Window.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype, 
         e.preventDefault();
 
         if (this.$element.is(".maximized"))
+            return;
+
+        var moveEventArgs = new TotemUI.Events.CancellableEvent();
+        this._trigger(TotemUI.Window.events.moveStart, moveEventArgs);
+        if (moveEventArgs.isCancelled())
             return;
 
         this.moveStartPosition = {
@@ -143,6 +154,11 @@ TotemUI.Window.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype, 
      */
     _beginResizing: function _beginResizing(e, mouseMove, mouseUp) {
         e.preventDefault();
+
+        var resizeEventArgs = new TotemUI.Events.CancellableEvent();
+        this._trigger(TotemUI.Window.events.resizeStart, resizeEventArgs);
+        if (resizeEventArgs.isCancelled())
+            return;
 
         var windowOffset = this.$element.offset();
         this.resizeStartWindowLocation = {
@@ -251,6 +267,8 @@ TotemUI.Window.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype, 
 
         this.moveStartPosition = null;
         this.moveStartWindowLocation = null;
+
+        this._trigger(TotemUI.Window.events.moveEnd);
     },
     /**
      * Universal method for ending resizing of the window.
@@ -267,6 +285,8 @@ TotemUI.Window.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype, 
         this.resizeStartPosition = null;
         this.resizeStartControlsSize = null;
         this.resizeStartWindowLocation = null;
+
+        this._trigger(TotemUI.Window.events.resizeEnd);
     },
     /**
      * Called when user stopped resizing of the bottom bar of window.
@@ -343,6 +363,8 @@ TotemUI.Window.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype, 
         var deltaPositionY = e.pageY - this.moveStartPosition.y;
         this.$element.css("left", this.moveStartWindowLocation.x + deltaPositionX)
                      .css("top", this.moveStartWindowLocation.y + deltaPositionY);
+
+        this._trigger(TotemUI.Window.events.move);
     },
     /**
      * Called when user has changed size of the window using bottom border.
@@ -353,6 +375,8 @@ TotemUI.Window.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype, 
         var deltaPositionY = e.pageY - this.resizeStartPosition.y;
         this.controls.contentPanel.height(this.resizeStartControlsSize.contentPanel.height + deltaPositionY);
         this.$element.height(this.resizeStartControlsSize.window.height + deltaPositionY);
+
+        this._trigger(TotemUI.Window.events.resize);
     },
     /**
      * Called when user has changed size of the window using bottom right corner.
@@ -365,6 +389,8 @@ TotemUI.Window.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype, 
         this.controls.contentPanel.height(this.resizeStartControlsSize.contentPanel.height + deltaPositionY);
         this.$element.height(this.resizeStartControlsSize.window.height + deltaPositionY);
         this.$element.width(this.resizeStartControlsSize.window.width + deltaPositionX);
+
+        this._trigger(TotemUI.Window.events.resize);
     },
     /**
      * Called when user has changed size of the window using left border.
@@ -375,6 +401,8 @@ TotemUI.Window.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype, 
         var deltaPositionX = e.pageX - this.resizeStartPosition.x;
         this.$element.css("left", this.resizeStartWindowLocation.x + deltaPositionX)
                      .width(this.resizeStartControlsSize.window.width - deltaPositionX);
+
+        this._trigger(TotemUI.Window.events.resize);
     },
     /**
      * Called when user has changed size of the window using right border.
@@ -384,6 +412,8 @@ TotemUI.Window.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype, 
     _onResizeRightBar: function _onResizeRightBar(e) {
         var deltaPositionX = e.pageX - this.resizeStartPosition.x;
         this.$element.width(this.resizeStartControlsSize.window.width + deltaPositionX);
+
+        this._trigger(TotemUI.Window.events.resize);
     },
     /**
      * Called when user has changed size of the window using top border.
@@ -395,6 +425,8 @@ TotemUI.Window.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype, 
         this.controls.contentPanel.height(this.resizeStartControlsSize.contentPanel.height - deltaPositionY);
         this.$element.css("top", this.resizeStartWindowLocation.y + deltaPositionY)
                      .height(this.resizeStartControlsSize.window.height - deltaPositionY);
+
+        this._trigger(TotemUI.Window.events.resize);
     },
     /**
      * Sets up moving of the window.
