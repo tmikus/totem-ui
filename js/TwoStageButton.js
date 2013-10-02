@@ -33,7 +33,10 @@ TotemUI.TwoStageButton = function TwoStageButton(element, configuration) {
  * @enum string
  */
 TotemUI.TwoStageButton.events = _.extend({}, TotemUI.Control.events, {
-    click: "click"
+    click: "click",
+    clickTimeoutChanged: "clickTimeoutChanged",
+    confirmMessageChanged: "confirmMessageChanged",
+    contentChanged: "contentChanged"
 });
 
 /**
@@ -137,26 +140,44 @@ TotemUI.TwoStageButton.prototype = TotemUI.Util.extend(TotemUI.Control.prototype
      * @prop {Number} value Value of the property to set.
      */
     setClickTimeout: function setClickTimeout(value) {
+        if (this.clickTimeout === value)
+            return;
+
+        var previousValue = this.clickTimeout;
         this.clickTimeout = value;
+
+        this._trigger(TotemUI.TwoStageButton.events.clickTimeoutChanged, new TotemUI.Events.ValueChangedEvent(previousValue, value));
     },
     /**
      * Sets the field 'confirmMessage' of the class.
      * @prop {String} value Value of the property to set.
      */
     setConfirmMessage: function setConfirmMessage(value) {
+        if (this.confirmMessage === value)
+            return;
+
+        var previousValue = this.confirmMessage;
         this.confirmMessage = value;
 
         if (this.isInitialized)
             this.confirmElement.innerText = value;
+
+        this._trigger(TotemUI.TwoStageButton.events.confirmMessageChanged, new TotemUI.Events.ValueChangedEvent(previousValue, value));
     },
     /**
      * Sets the field 'content' of the class.
      * @prop {String} value Value of the property to set.
      */
     setContent: function setContent(value) {
+        if (this.content === value)
+            return;
+
+        var previousValue = this.content;
         this.content = value;
 
         if (this.isInitialized)
             this.contentElement.innerHTML = value;
+
+        this._trigger(TotemUI.TwoStageButton.events.contentChanged, new TotemUI.Events.ValueChangedEvent(previousValue, value));
     }
 });

@@ -30,21 +30,19 @@ TotemUI.DialogControl.events = _.extend({}, TotemUI.Control.events, {
 TotemUI.DialogControl.prototype = TotemUI.Util.extend(TotemUI.Control.prototype, {
     /**
      * Ends hiding of the Dialog Control.
-     * @param [args] Arguments to push to "hidden" event.
      * @protected
      */
-    _endHide: function _endHide(args) {
+    _endHide: function _endHide() {
         this.shown = false;
-        this._trigger(TotemUI.DialogControl.events.hidden, args || null);
+        this._trigger(TotemUI.DialogControl.events.hidden, new TotemUI.Events.ValueChangedEvent(true, false));
     },
     /**
      * Ends showing of the Dialog Control.
-     * @param [args] Arguments to push to "shown" event.
      * @protected
      */
-    _endShow: function _endShow(args) {
+    _endShow: function _endShow() {
         this.shown = true;
-        this._trigger(TotemUI.DialogControl.events.shown, args || null);
+        this._trigger(TotemUI.DialogControl.events.shown, new TotemUI.Events.ValueChangedEvent(false, true));
     },
     /**
      * Initializes the Dialog Control.

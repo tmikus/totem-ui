@@ -32,7 +32,12 @@ TotemUI.Tooltip = function Tooltip(element, configuration) {
  * Enumeration of available control events.
  * @enum string
  */
-TotemUI.Tooltip.events = _.extend({}, TotemUI.DialogControl.events);
+TotemUI.Tooltip.events = _.extend({}, TotemUI.DialogControl.events, {
+    hideDelayChanged: "hideDelayChanged",
+    horizontalPositionChanged: "horizontalPositionChanged",
+    textChanged: "textChanged",
+    verticalPositionChanged: "verticalPositionChanged"
+});
 
 /**
  * Enumeration of tooltip horizontal positions.
@@ -185,37 +190,62 @@ TotemUI.Tooltip.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype,
      * @prop {Number} value Value of the property to set.
      */
     setHideDelay: function setHideDelay(value) {
+        if (this.hideDelay === value)
+            return;
+
+        var previousValue = this.hideDelay;
         this.hideDelay = value;
+
+        this._trigger(TotemUI.Tooltip.events.hideDelayChanged, new TotemUI.Events.ValueChangedEvent(previousValue, value));
     },
     /**
      * Sets the field 'horizontalPosition' of the class.
      * @prop {Number} value Value of the property to set.
      */
     setHorizontalPosition: function setHorizontalPosition(value) {
+        if (this.horizontalPosition === value)
+            return;
+
+        var previousValue = this.horizontalPosition;
         this.horizontalPosition = value;
 
         if (this.shown)
             this._positionDirectlyAboveElement();
+
+        this._trigger(TotemUI.Tooltip.events.horizontalPositionChanged, new TotemUI.Events.ValueChangedEvent(previousValue, value));
     },
     /**
      * Sets the field 'text' of the class.
      * @prop {String} value Value of the property to set.
      */
     setText: function setText(value) {
+        if (this.text === value)
+            return;
+
+        var previousValue = this.text;
         this.text = value;
+
         if (this.isInitialized) {
             this.tooltipContent.innerText = value;
         }
+
+        this._trigger(TotemUI.Tooltip.events.titleChanged, new TotemUI.Events.ValueChangedEvent(previousValue, value));
     },
     /**
      * Sets the field 'verticalPosition' of the class.
      * @prop {Number} value Value of the property to set.
      */
     setVerticalPosition: function setVerticalPosition(value) {
+        if (this.verticalPosition === value)
+            return;
+
+        var previousValue = this.verticalPosition;
         this.verticalPosition = value;
 
         if (this.shown)
             this._positionDirectlyAboveElement();
+
+        this._trigger(TotemUI.Tooltip.events.verticalPositionChanged, new TotemUI.Events.ValueChangedEvent(previousValue, value));
     },
     /**
      * Shows the Tooltip.

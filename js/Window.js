@@ -77,7 +77,14 @@ TotemUI.Window = function Window(element, configuration) {
  */
 TotemUI.Window.events = _.extend({}, TotemUI.DialogControl.events, {
     maximizing: "maximizing",
-    maximized: "maximized"
+    maximized: "maximized",
+    minimizing: "minimizing",
+    minimized: "minimized",
+    movableChanged: "movableChanged",
+    resizableChanged: "resizableChanged",
+    showCloseButtonChanged: "showCloseButtonChanged",
+    showMaximizeButtonChanged: "showMaximizeButtonChanged",
+    titleChanged: "titleChanged"
 });
 
 /**
@@ -588,21 +595,37 @@ TotemUI.Window.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype, 
      * Maximizes the window.
      */
     maximize: function maximize() {
-        if (!this.showMaximizeButton)
+        if (!this.showMaximizeButton || this.maximized)
+            return;
+
+        var maximizingEventArgs = new TotemUI.Events.CancellableEvent();
+        this._trigger(TotemUI.Window.events.maximizing, maximizingEventArgs);
+
+        if (maximizingEventArgs.isCancelled())
             return;
 
         this.maximized = true;
         this.$element.addClass("maximized");
+
+        this._trigger(TotemUI.Window.events.maximized, new TotemUI.Events.ValueChangedEvent(false, true));
     },
     /**
      * Minimizes the window.
      */
     minimize: function minimize() {
-        if (!this.showMaximizeButton)
+        if (!this.showMaximizeButton || !this.maximized)
+            return;
+
+        var minimizingEventArgs = new TotemUI.Events.CancellableEvent();
+        this._trigger(TotemUI.Window.events.minimizing, minimizingEventArgs);
+
+        if (minimizingEventArgs.isCancelled())
             return;
 
         this.maximized = false;
         this.$element.removeClass("maximized");
+
+        this._trigger(TotemUI.Window.events.minimized, new TotemUI.Events.ValueChangedEvent(true, false));
     },
     /**
      * Sets visibility of the "Close" button.
@@ -612,12 +635,16 @@ TotemUI.Window.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype, 
         if (this.showCloseButton === visible)
             return;
 
+        var previousValue = this.showCloseButton;
         this.showCloseButton = visible;
+
         if (visible) {
             this.controls.closeButton.addClass("shown");
         } else {
             this.controls.closeButton.removeClass("shown");
         }
+
+        this._trigger(TotemUI.Window.events.showCloseButtonChanged, new TotemUI.Events.ValueChangedEvent(previousValue, visible));
     },
     /**
      * Sets visibility of the "Maximize" button.
@@ -627,44 +654,66 @@ TotemUI.Window.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype, 
         if (this.showMaximizeButton === visible)
             return;
 
+        var previousValue = this.showMaximizeButton;
         this.showMaximizeButton = visible;
+
         if (visible) {
             this.controls.maximizeButton.addClass("shown");
         } else {
             this.controls.maximizeButton.removeClass("shown");
         }
+
+        this._trigger(TotemUI.Window.events.showMaximizeButtonChanged, new TotemUI.Events.ValueChangedEvent(previousValue, visible));
     },
     /**
      * Sets the movable property of the window.
      * @param {boolean} value True if the window should be movable; otherwise false.
      */
     setMovable: function setMovable(value) {
+        if (this.movable === value)
+            return;
+
+        var previousValue = this.movable;
         this.movable = value;
 
         if (value)
             this.$element.addClass("movable");
         else
             this.$element.removeClass("movable");
+
+        this._trigger(TotemUI.Window.events.movableChanged, new TotemUI.Events.ValueChangedEvent(previousValue, value));
     },
     /**
      * Sets the resizable property of the window.
      * @param {boolean} value True if the window should be resizable; otherwise false.
      */
     setResizable: function setResizable(value) {
+        if (this.resizable === value)
+            return;
+
+        var previousValue = this.resizable;
         this.resizable = value;
 
         if (value)
             this.$element.addClass("resizable");
         else
             this.$element.removeClass("resizable");
+
+        this._trigger(TotemUI.Window.events.resizableChanged, new TotemUI.Events.ValueChangedEvent(previousValue, value));
     },
     /**
      * Sets the title of the window control.
      * @param {String} value Title to set.
      */
     setTitle: function setTitle(value) {
+        if (this.title === value)
+            return;
+
+        var previousValue = this.title;
         this.title = value;
         this.controls.titleLabel.text(value);
+
+        this._trigger(TotemUI.Window.events.titleChanged, new TotemUI.Events.ValueChangedEvent(previousValue, value));
     },
     /**
      * Shows the Window.

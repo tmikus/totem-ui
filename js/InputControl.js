@@ -58,7 +58,9 @@ TotemUI.InputControl.prototype = TotemUI.Util.extend(TotemUI.Control.prototype, 
         if (this.readonly == readonly)
             return;
 
+        var previousValue = this.readonly;
         this.readonly = readonly;
-        this._trigger(TotemUI.InputControl.events.readonlyChanged, readonly);
+
+        this._trigger(TotemUI.InputControl.events.readonlyChanged, new TotemUI.Events.ValueChangedEvent(previousValue, readonly));
     }
 });

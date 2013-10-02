@@ -93,7 +93,7 @@ TotemUI.BusyIndicator.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prot
 
         if (this.boundEventListener) {
             $(window).off("scroll", this.boundEventListener)
-                .off("resize", this.boundEventListener);
+                     .off("resize", this.boundEventListener);
             this.boundEventListener = null;
         }
 

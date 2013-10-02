@@ -53,10 +53,12 @@ TotemUI.Control.prototype = TotemUI.Util.extend(TotemUI.Core.EventEmitter.protot
      * @param {boolean} enabled True if the control should be enabled; otherwise false.
      */
     setEnabled: function setEnabled(enabled) {
-        if (this.enabled == enabled)
+        if (this.enabled === enabled)
             return;
 
+        var previousValue = this.enabled;
         this.enabled = enabled;
-        this._trigger(TotemUI.Control.events.enabledChanged, enabled);
+
+        this._trigger(TotemUI.Control.events.enabledChanged, new TotemUI.Events.ValueChangedEvent(previousValue, enabled));
     }
 });
