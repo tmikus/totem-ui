@@ -102,10 +102,10 @@ $resizeGripSize: 15px;
 
     .tui-window-top-actions {
         position: absolute;
-        right: 0;
-        top: 0;
-        height: $titlePanelHeight;
-        line-height: $titlePanelHeight;
+        right: $resizeBorderSize;
+        top: $resizeBorderSize;
+        height: ($titlePanelHeight - $resizeBorderSize);
+        line-height: ($titlePanelHeight - $resizeBorderSize);
         text-align: right;
 
         .tui-maximize-button,

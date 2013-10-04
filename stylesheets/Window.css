@@ -111,10 +111,10 @@
 /* line 103, ../sass/Window.scss */
 .tui-window .tui-window-top-actions {
   position: absolute;
-  right: 0;
-  top: 0;
-  height: 30px;
-  line-height: 30px;
+  right: 8px;
+  top: 8px;
+  height: 22px;
+  line-height: 22px;
   text-align: right;
 }
 /* line 112, ../sass/Window.scss */
