@@ -24,6 +24,12 @@ TotemUI.TwoStageButton = function TwoStageButton(element, configuration) {
     this.isClicked = false;
     this.isInitialized = false;
     this.pendingClickTimeout = null;
+    this.startTimeoutAfterClick = configuration.startTimeoutAfterClick;
+
+    this.eventBindings = {
+        click: this._onButtonClick.bind(this),
+        mouseLeave: this._onButtonLeave.bind(this)
+    };
 
     this._initialize();
 };
@@ -36,7 +42,8 @@ TotemUI.TwoStageButton.events = _.extend({}, TotemUI.Control.events, {
     click: "click",
     clickTimeoutChanged: "clickTimeoutChanged",
     confirmMessageChanged: "confirmMessageChanged",
-    contentChanged: "contentChanged"
+    contentChanged: "contentChanged",
+    startTimeoutAfterClickChanged: "startTimeoutAfterClickChanged"
 });
 
 /**
@@ -46,7 +53,8 @@ TotemUI.TwoStageButton.events = _.extend({}, TotemUI.Control.events, {
 TotemUI.TwoStageButton.defaultConfiguration = {
     clickTimeout: 1000,
     confirmMessage: "Are you sure?",
-    content: ""
+    content: "",
+    startTimeoutAfterClick: false
 };
 
 TotemUI.TwoStageButton.prototype = TotemUI.Util.extend(TotemUI.Control.prototype, {
@@ -58,8 +66,9 @@ TotemUI.TwoStageButton.prototype = TotemUI.Util.extend(TotemUI.Control.prototype
         if (this.isInitialized)
             return;
 
-        this.$element.addClass("tui-two-stage-button");
-        this.$element.on("click", this._onButtonClick.bind(this));
+        this.$element.addClass("tui-two-stage-button")
+                     .on("click", this.eventBindings.click)
+                     .on("mouseleave", this.eventBindings.mouseLeave);
 
         var confirmElement = document.createElement("span");
         confirmElement.className = "tui-tsb-confirmation";
@@ -84,7 +93,10 @@ TotemUI.TwoStageButton.prototype = TotemUI.Util.extend(TotemUI.Control.prototype
         if (!this.isClicked) {
             this.isClicked = true;
             this.$element.addClass("tui-tsp-confirm");
-            this.pendingClickTimeout = setTimeout(this._onButtonClickTimeout.bind(this), this.clickTimeout);
+
+            if (this.startTimeoutAfterClick)
+                this.pendingClickTimeout = setTimeout(this._onButtonClickTimeout.bind(this), this.clickTimeout);
+
             return;
         }
 
@@ -93,6 +105,16 @@ TotemUI.TwoStageButton.prototype = TotemUI.Util.extend(TotemUI.Control.prototype
         this.pendingClickTimeout = null;
         this.$element.removeClass("tui-tsp-confirm");
         this._trigger(TotemUI.TwoStageButton.events.click);
+    },
+    /**
+     * Called after leaving the button.
+     * @private
+     */
+    _onButtonLeave: function _onButtonLeave() {
+        if (this.startTimeoutAfterClick || this.pendingClickTimeout)
+            return;
+
+        this.pendingClickTimeout = setTimeout(this._onButtonClickTimeout.bind(this), this.clickTimeout);
     },
     /**
      * Called after button click has timed out.
@@ -109,7 +131,10 @@ TotemUI.TwoStageButton.prototype = TotemUI.Util.extend(TotemUI.Control.prototype
     dispose: function dispose() {
         this.$element[0].removeChild(this.confirmElement);
         this.$element[0].removeChild(this.contentElement);
-        this.$element.removeClass("tui-tsp-confirm")
+
+        this.$element.off("click", this.eventBindings.click)
+                     .off("mouseleave", this.eventBindings.mouseLeave)
+                     .removeClass("tui-tsp-confirm")
                      .removeClass("tui-two-stage-button");
 
         this.confirmElement = null;
@@ -134,6 +159,13 @@ TotemUI.TwoStageButton.prototype = TotemUI.Util.extend(TotemUI.Control.prototype
      */
     getContent: function getContent() {
         return this.content;
+    },
+    /**
+     * Gets if the timeout is started after clicking on the button.
+     * @returns {boolean} True if is started after clicking; otherwise false.
+     */
+    isStartingTimeoutAfterClick: function isStartingTimeoutAfterClick() {
+        return this.startTimeoutAfterClick;
     },
     /**
      * Sets the field 'clickTimeout' of the class.
@@ -179,5 +211,18 @@ TotemUI.TwoStageButton.prototype = TotemUI.Util.extend(TotemUI.Control.prototype
             this.contentElement.innerHTML = value;
 
         this._trigger(TotemUI.TwoStageButton.events.contentChanged, new TotemUI.Events.ValueChangedEvent(previousValue, value));
+    },
+    /**
+     * Sets if the timeout will start after clicking on the button.
+     * @param value True if should start after clicking; otherwise false.
+     */
+    setStartTimeoutAfterClick: function setStartTimeoutAfterClick(value) {
+        if (this.startTimeoutAfterClick === value)
+            return;
+
+        var previousValue = this.startTimeoutAfterClick;
+        this.startTimeoutAfterClick = value;
+
+        this._trigger(TotemUI.TwoStageButton.events.startTimeoutAfterClickChanged, new TotemUI.Events.ValueChangedEvent(previousValue, value));
     }
 });
