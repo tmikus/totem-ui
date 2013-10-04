@@ -569,8 +569,22 @@ TotemUI.Window.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype, 
         TotemUI.DialogControl.prototype.dispose.apply(this, arguments);
     },
     /**
+     * Gets actions of the Window control.
+     * @returns {HTMLElement[]} Action elements.
+     */
+    getActions: function getActions() {
+        return this.controls.bottomActionsPanel[0].children;
+    },
+    /**
+     * Gets HTML content of the actions panel of the Window.
+     * @returns {String} HTML with Window actions.
+     */
+    getActionsHtml: function getActionsHtml() {
+        return this.controls.bottomActionsPanel.html();
+    },
+    /**
      * Gets content of the Window control.
-     * @returns {HTMLElement} Content element.
+     * @returns {HTMLElement[]} Content elements.
      */
     getContent: function getContent() {
         return this.controls.contentPanel[0].children;
@@ -579,7 +593,7 @@ TotemUI.Window.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype, 
      * Gets HTML content of the Window control.
      * @returns {String} Content of the Window.
      */
-    getHtmlContent: function getHtmlContent() {
+    getContentHtml: function getContentHtml() {
         return this.controls.contentPanel.html();
     },
     /**
@@ -674,6 +688,34 @@ TotemUI.Window.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype, 
         this._trigger(TotemUI.Window.events.minimized, new TotemUI.Events.ValueChangedEvent(true, false));
     },
     /**
+     * Sets actions of the Window control.
+     * @param {HTMLElement[]|HTMLElement} actions Actions to set - either HTMLElement or array of HTMLElements
+     */
+    setActions: function setActions(actions) {
+        // Cleaning up the actions before setting it.
+        var bottomActionsPanel = this.controls.bottomActionsPanel[0];
+        var childrenLength = bottomActionsPanel.children.length;
+        for (var childrenIndex = 0; childrenIndex < childrenLength; childrenIndex++) {
+            bottomActionsPanel.removeChild(bottomActionsPanel.children[0]);
+        }
+
+        // Checking if this is array of elements to insert.
+        if (TotemUI.Util.isArray(actions)) {
+            for (var contentIndex = 0; contentIndex < actions.length; contentIndex++) {
+                bottomActionsPanel.appendChild(actions[contentIndex]);
+            }
+        } else {
+            bottomActionsPanel.appendChild(actions);
+        }
+    },
+    /**
+     * Sets HTML of the Window's actions panel.
+     * @param {String} actionsHtml HTML with actions to set.
+     */
+    setActionsHtml: function setActionsHtml(actionsHtml) {
+        this.controls.bottomActionsPanel.html(actionsHtml);
+    },
+    /**
      * Sets visibility of the "Close" button.
      * @param {boolean} visible True if the button should be visible; otherwise false.
      */
@@ -694,7 +736,7 @@ TotemUI.Window.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype, 
     },
     /**
      * Sets content of the Window control.
-     * @param {Array|HTMLElement} content Content to set - either HTMLElement of array of HTMLElement's.
+     * @param {HTMLElement[]|HTMLElement} content Content to set - either HTMLElement of array of HTMLElements.
      */
     setContent: function setContent(content) {
         // Cleaning up the content before setting it.
@@ -717,7 +759,7 @@ TotemUI.Window.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype, 
      * Sets content of the Window control.
      * @param {String} htmlContent HTML content to set.
      */
-    setHtmlContent: function setHtmlContent(htmlContent) {
+    setContentHtml: function setContentHtml(htmlContent) {
         this.controls.contentPanel.html(htmlContent);
     },
     /**
