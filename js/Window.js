@@ -76,6 +76,8 @@ TotemUI.Window = function Window(element, configuration) {
  * @enum
  */
 TotemUI.Window.events = _.extend({}, TotemUI.DialogControl.events, {
+    actionsChanged: "actionsChanged",
+    contentChanged: "contentChanged",
     maximizing: "maximizing",
     maximized: "maximized",
     minimizing: "minimizing",
@@ -707,6 +709,8 @@ TotemUI.Window.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype, 
         } else {
             bottomActionsPanel.appendChild(actions);
         }
+
+        this._trigger(TotemUI.Window.events.actionsChanged);
     },
     /**
      * Sets HTML of the Window's actions panel.
@@ -714,6 +718,7 @@ TotemUI.Window.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype, 
      */
     setActionsHtml: function setActionsHtml(actionsHtml) {
         this.controls.bottomActionsPanel.html(actionsHtml);
+        this._trigger(TotemUI.Window.events.actionsChanged);
     },
     /**
      * Sets visibility of the "Close" button.
@@ -754,6 +759,8 @@ TotemUI.Window.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype, 
         } else {
             contentPanel.appendChild(content);
         }
+
+        this._trigger(TotemUI.Window.events.contentChanged);
     },
     /**
      * Sets content of the Window control.
@@ -761,6 +768,7 @@ TotemUI.Window.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype, 
      */
     setContentHtml: function setContentHtml(htmlContent) {
         this.controls.contentPanel.html(htmlContent);
+        this._trigger(TotemUI.Window.events.contentChanged);
     },
     /**
      * Sets visibility of the "Maximize" button.
