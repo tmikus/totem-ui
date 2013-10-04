@@ -569,6 +569,20 @@ TotemUI.Window.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype, 
         TotemUI.DialogControl.prototype.dispose.apply(this, arguments);
     },
     /**
+     * Gets content of the Window control.
+     * @returns {HTMLElement} Content element.
+     */
+    getContent: function getContent() {
+        return this.controls.contentPanel[0].children;
+    },
+    /**
+     * Gets HTML content of the Window control.
+     * @returns {String} Content of the Window.
+     */
+    getHtmlContent: function getHtmlContent() {
+        return this.controls.contentPanel.html();
+    },
+    /**
      * Gets title set in the Window control.
      * @returns {String} Title of the window.
      */
@@ -677,6 +691,34 @@ TotemUI.Window.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype, 
         }
 
         this._trigger(TotemUI.Window.events.showCloseButtonChanged, new TotemUI.Events.ValueChangedEvent(previousValue, visible));
+    },
+    /**
+     * Sets content of the Window control.
+     * @param {Array|HTMLElement} content Content to set - either HTMLElement of array of HTMLElement's.
+     */
+    setContent: function setContent(content) {
+        // Cleaning up the content before setting it.
+        var contentPanel = this.controls.contentPanel[0];
+        var childrenLength = contentPanel.children.length;
+        for (var childrenIndex = 0; childrenIndex < childrenLength; childrenIndex++) {
+            contentPanel.removeChild(contentPanel.children[0]);
+        }
+
+        // Checking if this is array of elements to insert.
+        if (TotemUI.Util.isArray(content)) {
+            for (var contentIndex = 0; contentIndex < content.length; contentIndex++) {
+                contentPanel.appendChild(content[contentIndex]);
+            }
+        } else {
+            contentPanel.appendChild(content);
+        }
+    },
+    /**
+     * Sets content of the Window control.
+     * @param {String} htmlContent HTML content to set.
+     */
+    setHtmlContent: function setHtmlContent(htmlContent) {
+        this.controls.contentPanel.html(htmlContent);
     },
     /**
      * Sets visibility of the "Maximize" button.

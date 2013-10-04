@@ -5,22 +5,6 @@ var TotemUI = TotemUI || {};
  */
 TotemUI.Util = {
     /**
-     * Extends 'basePrototype' with 'childPrototype'.
-     * @param basePrototype Base prototype.
-     * @param childPrototype Child prototype.
-     * @returns {*} Extended prototype.
-     */
-    extend: function extend(basePrototype, childPrototype) {
-        var intermediatePrototype = Object.create(basePrototype);
-        var childPrototypeKeys = Object.keys(childPrototype);
-
-        childPrototypeKeys.forEach(function (propertyName) {
-            intermediatePrototype[propertyName] = childPrototype[propertyName];
-        });
-
-        return intermediatePrototype;
-    },
-    /**
      * Extracts size from the size string like "20px".
      *
      * @param {String} sizeString Size string.
@@ -36,6 +20,43 @@ TotemUI.Util = {
             }
         }
         return 0;
+    },
+    /**
+     * Gets maximum ZIndex for the element for which this BusyIndicator was created.
+     *
+     * @param {jQuery} $element Element of which z-index should be got.
+     * @returns {Number} ZIndex for this element.
+     * @private
+     */
+    _getMaximumZIndexForElement: function _getMaximumZIndexForElement($element) {
+        var currentElement = $element;
+        var maximumZIndex = 0;
+        do
+        {
+            var zIndex = currentElement.css("z-index");
+            if (zIndex == "auto")
+                continue;
+            if (zIndex > maximumZIndex)
+                maximumZIndex = zIndex;
+        } while (currentElement.length && !(currentElement = currentElement.parent()).is(document.body));
+
+        return maximumZIndex;
+    },
+    /**
+     * Extends 'basePrototype' with 'childPrototype'.
+     * @param basePrototype Base prototype.
+     * @param childPrototype Child prototype.
+     * @returns {*} Extended prototype.
+     */
+    extend: function extend(basePrototype, childPrototype) {
+        var intermediatePrototype = Object.create(basePrototype);
+        var childPrototypeKeys = Object.keys(childPrototype);
+
+        childPrototypeKeys.forEach(function (propertyName) {
+            intermediatePrototype[propertyName] = childPrototype[propertyName];
+        });
+
+        return intermediatePrototype;
     },
     /**
      * Gets Position and Dimensions of visible part of the element.
@@ -105,25 +126,12 @@ TotemUI.Util = {
         }
     },
     /**
-     * Gets maximum ZIndex for the element for which this BusyIndicator was created.
-     *
-     * @param {jQuery} $element Element of which z-index should be got.
-     * @returns {Number} ZIndex for this element.
-     * @private
+     * Checks if object 'value' is an Array.
+     * @param value Object to check if is array.
+     * @returns {boolean} True if is array; otherwise false.
      */
-    _getMaximumZIndexForElement: function _getMaximumZIndexForElement($element) {
-        var currentElement = $element;
-        var maximumZIndex = 0;
-        do
-        {
-            var zIndex = currentElement.css("z-index");
-            if (zIndex == "auto")
-                continue;
-            if (zIndex > maximumZIndex)
-                maximumZIndex = zIndex;
-        } while (currentElement.length && !(currentElement = currentElement.parent()).is(document.body));
-
-        return maximumZIndex;
+    isArray: function (value) {
+        return value instanceof Array;
     },
     /**
      * Method used as a placeholder for derived classes methods.
