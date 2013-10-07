@@ -143,16 +143,16 @@ TotemUI.TwoStageButton.prototype = TotemUI.Util.extend(TotemUI.Control.prototype
         TotemUI.Control.prototype.dispose.apply(this, arguments);
     },
     /**
-     * Gets the field 'confirmMessage' of the class.
-     */
-    getConfirmMessage: function getConfirmMessage() {
-        return this.confirmMessage;
-    },
-    /**
      * Gets the field 'clickTimeout' of the class.
      */
     getClickTimeout: function getClickTimeout() {
         return this.clickTimeout;
+    },
+    /**
+     * Gets the field 'confirmMessage' of the class.
+     */
+    getConfirmMessage: function getConfirmMessage() {
+        return this.confirmMessage;
     },
     /**
      * Gets the field 'content' of the class.
@@ -214,7 +214,7 @@ TotemUI.TwoStageButton.prototype = TotemUI.Util.extend(TotemUI.Control.prototype
     },
     /**
      * Sets if the timeout will start after clicking on the button.
-     * @param value True if should start after clicking; otherwise false.
+     * @param {boolean} value True if should start after clicking; otherwise false.
      */
     setStartTimeoutAfterClick: function setStartTimeoutAfterClick(value) {
         if (this.startTimeoutAfterClick === value)
