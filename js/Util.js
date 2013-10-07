@@ -5,23 +5,6 @@ var TotemUI = TotemUI || {};
  */
 TotemUI.Util = {
     /**
-     * Extracts size from the size string like "20px".
-     *
-     * @param {String} sizeString Size string.
-     * @return {Number} Size. Default 0.
-     * @private
-     */
-    _extractSize: function _extractSize(sizeString) {
-        if (sizeString && sizeString != "" && TotemUI.Util.stringEndsWith(sizeString, "px")) {
-            var size = sizeString.substr(0, sizeString.length - 2);
-            if (!isNaN(size)) {
-                var convertedSize = parseInt(size);
-                return convertedSize < 0 ? 0 : convertedSize;
-            }
-        }
-        return 0;
-    },
-    /**
      * Gets maximum ZIndex for the element for which this BusyIndicator was created.
      *
      * @param {jQuery} $element Element of which z-index should be got.
@@ -65,62 +48,27 @@ TotemUI.Util = {
      * @returns {bool|{left:Number, top:Number, width:Number, height:Number, zIndex:Number}} False informs that element is not visible; Object contains properties of the visible part of element.
      */
     getElementPositionAndDimensions: function getElementPositionAndDimensions($element) {
-        var elementIsVisible = $element.css("visibility") == "visible" && $element.css("display") != "none";
-        var elementPosition = $element.offset();
-        var elementHeight = $element.height();
-        var elementWidth = $element.width();
-        var elementZIndex = TotemUI.Util._getMaximumZIndexForElement($element);
-        var windowScrollX = window.scrollX;
-        var windowScrollY = window.scrollY;
+        var elementIsVisible = $element.is(":visible");
+        var elementBoundingRectangle = $element[0].getBoundingClientRect();
         var windowHeight = window.innerHeight;
         var windowWidth = window.innerWidth;
 
-        var topOffset = TotemUI.Util._extractSize($element.css("padding-top"))
-            + TotemUI.Util._extractSize($element.css("margin-top"))
-            + TotemUI.Util._extractSize($element.css("border-top-width"));
-        var bottomOffset = TotemUI.Util._extractSize($element.css("padding-bottom"))
-            + TotemUI.Util._extractSize($element.css("margin-bottom"));
-        var leftOffset = TotemUI.Util._extractSize($element.css("padding-left"))
-            + TotemUI.Util._extractSize($element.css("margin-left"))
-            + TotemUI.Util._extractSize($element.css("border-left-width"));
-        var rightOffset = TotemUI.Util._extractSize($element.css("padding-right"))
-            + TotemUI.Util._extractSize($element.css("margin-right"));
-
-        elementHeight += topOffset + bottomOffset;
-        elementWidth += leftOffset + rightOffset;
-
-        var isOutsideViewX = elementPosition.left >= windowWidth + windowScrollX ||
-            elementPosition.left + elementWidth <= windowScrollX;
-        var isOutsideViewY = elementPosition.top >= windowHeight + windowScrollY ||
-            elementPosition.top + elementHeight <= windowScrollY;
+        var isOutsideViewX = elementBoundingRectangle.right <= 0 || elementBoundingRectangle.left >= windowWidth;
+        var isOutsideViewY = elementBoundingRectangle.bottom <= 0 || elementBoundingRectangle.top >= windowHeight;
 
         if (isOutsideViewX || isOutsideViewY || !elementIsVisible)
             return false;
         else {
-            var overlayX = elementPosition.left < windowScrollX ? windowScrollX : elementPosition.left;
-            var overlayY = elementPosition.top < windowScrollY ? windowScrollY : elementPosition.top;
-            var overlayWidth = 0;
-            var overlayHeight = 0;
+            var elementZIndex = TotemUI.Util._getMaximumZIndexForElement($element);
 
-            // If end of the element is outside of the visible part of the screen...
-            if (elementPosition.left + elementWidth > windowScrollX + windowWidth) {
-                overlayWidth = elementWidth - (overlayX - elementPosition.left) - (elementPosition.left + elementWidth - (windowScrollX + windowWidth));
-            } else {
-                overlayWidth = elementWidth - (overlayX - elementPosition.left);
-            }
-
-            // If end of the element is outside of the visible part of the screen...
-            if (elementPosition.top + elementHeight > windowScrollY + windowHeight) {
-                overlayHeight = elementHeight - (overlayY - elementPosition.top) - (elementPosition.top + elementHeight - (windowScrollY + windowHeight));
-            } else {
-                overlayHeight = elementHeight - (overlayY - elementPosition.top);
-            }
+            var targetHeight = elementBoundingRectangle.height + Math.min(elementBoundingRectangle.top, 0) + (windowHeight - Math.max(elementBoundingRectangle.bottom, windowHeight));
+            var targetWidth = elementBoundingRectangle.width + Math.min(elementBoundingRectangle.left, 0) + (windowWidth - Math.max(elementBoundingRectangle.right, windowWidth));
 
             return {
-                left: overlayX,
-                top: overlayY,
-                width: overlayWidth,
-                height: overlayHeight,
+                left: elementBoundingRectangle.left < 0 ? window.scrollX : elementBoundingRectangle.left,
+                top: elementBoundingRectangle.top < 0 ? window.scrollY : elementBoundingRectangle.top,
+                width: targetWidth,
+                height: targetHeight,
                 zIndex: elementZIndex + 1
             };
         }
@@ -138,15 +86,5 @@ TotemUI.Util = {
      */
     notImplemented: function notImplemented() {
         throw "Not implemented!";
-    },
-    /**
-     * Checks if string 'string' ends with 'ending.
-     *
-     * @param {String} string String to check if it ends with specified phrase.
-     * @param {String} ending Expected ending of the string.
-     * @returns {boolean} True if it ends with 'ending'; otherwise false.
-     */
-    stringEndsWith: function (string, ending) {
-        return string.substr(string.length - ending.length) == ending;
     }
 };
