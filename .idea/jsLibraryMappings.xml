@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="JavaScriptLibraryMappings">
-    <file url="PROJECT" libraries="{jasmine-1.1.0, jquery.maskedinput.min, jquery.min, underscore-min}" />
+    <file url="PROJECT" libraries="{jQuery-1.9.1, jasmine, jquery.maskedinput.min, jquery.min, underscore-min}" />
   </component>
 </project>
 

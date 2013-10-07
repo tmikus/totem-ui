@@ -17,7 +17,8 @@
     <orderEntry type="library" name="jquery.maskedinput.min" level="project" />
     <orderEntry type="library" name="underscore-min" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="sass-stdlib" level="application" />
-    <orderEntry type="library" name="jasmine-1.1.0" level="project" />
+    <orderEntry type="library" name="jasmine" level="project" />
+    <orderEntry type="library" name="jQuery-1.9.1" level="application" />
   </component>
 </module>
 
