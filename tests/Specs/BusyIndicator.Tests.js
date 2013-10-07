@@ -118,4 +118,36 @@ describe("BusyIndicator", function () {
         expect(events.onHidingCalled).toHaveBeenCalled();
         expect(events.onHiddenCalled).not.toHaveBeenCalled();
     });
+
+    it("should return false on second call to '_initialize' method", function () {
+        // First call to _initialize method.
+        expect(busyIndicator._initialize()).toBeTruthy();
+
+        // Second call to _initialize method - this should return false
+        expect(busyIndicator._initialize()).toBeFalsy();
+    });
+
+    it("should hide the BusyIndicator if element to cover is outside browser viewport to the left", function () {
+        elementToCover.style.position = "absolute";
+        elementToCover.style.left = "-200px";
+
+        busyIndicator.show();
+        expect(busyIndicator.$busyIndicatorElement.hasClass("shown")).toBeFalsy();
+    });
+
+    it("should hide the BusyIndicator if element to cover is outside browser viewport to the top", function () {
+        elementToCover.style.position = "absolute";
+        elementToCover.style.top = "-300px";
+
+        busyIndicator.show();
+        expect(busyIndicator.$busyIndicatorElement.hasClass("shown")).toBeFalsy();
+    });
+
+    it("should show the BusyIndicator if element to cover is partially outside browser viewport to the left", function () {
+        elementToCover.style.position = "absolute";
+        elementToCover.style.left = "-150px";
+
+        busyIndicator.show();
+        expect(busyIndicator.$busyIndicatorElement.hasClass("shown")).toBeTruthy();
+    });
 });
