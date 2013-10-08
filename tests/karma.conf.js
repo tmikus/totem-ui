@@ -27,6 +27,7 @@ module.exports = function(config) {
             'js/TwoStageButton.js',
             'js/Window.js',
             'tests/Specs/BusyIndicator.Tests.js',
+            'tests/Specs/Tooltip.Tests.js',
             'tests/Specs/TwoStageButton.Tests.js'
         ],
 

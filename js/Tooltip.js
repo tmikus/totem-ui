@@ -134,7 +134,8 @@ TotemUI.Tooltip.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype,
      * Disposes instance of the BusyIndicator control.
      */
     dispose: function dispose() {
-        document.body.removeChild(this.$tooltipElement[0]);
+        if (this.$tooltipElement)
+            document.body.removeChild(this.$tooltipElement[0]);
 
         TotemUI.DialogControl.prototype.dispose.apply(this, arguments);
     },
@@ -229,7 +230,7 @@ TotemUI.Tooltip.prototype = TotemUI.Util.extend(TotemUI.DialogControl.prototype,
             this.tooltipContent.innerText = value;
         }
 
-        this._trigger(TotemUI.Tooltip.events.titleChanged, new TotemUI.Events.ValueChangedEvent(previousValue, value));
+        this._trigger(TotemUI.Tooltip.events.textChanged, new TotemUI.Events.ValueChangedEvent(previousValue, value));
     },
     /**
      * Sets the field 'verticalPosition' of the class.
